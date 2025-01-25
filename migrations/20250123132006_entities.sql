@@ -33,8 +33,6 @@ CREATE TABLE address (
 
 CREATE TABLE client (
     id UUID PRIMARY KEY,
-    login VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
     firstname VARCHAR(255) NOT NULL,
     surname VARCHAR(255) NOT NULL,
     birthday DATE DEFAULT NULL,
@@ -58,8 +56,6 @@ CREATE TABLE client_address (
 
 CREATE TABLE supplier (
     id UUID PRIMARY KEY,
-    login VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     phone_number BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

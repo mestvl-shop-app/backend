@@ -8,8 +8,6 @@ import (
 
 type Supplier struct {
 	ID          uuid.UUID  `db:"id"`
-	Login       string     `db:"login"`
-	Password    string     `db:"password"`
 	Name        string     `db:"name"`
 	PhoneNumber int        `db:"phone_number"`
 	CreatedAt   time.Time  `db:"created_at"`

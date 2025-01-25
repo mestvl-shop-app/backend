@@ -8,8 +8,6 @@ import (
 
 type Client struct {
 	ID        uuid.UUID     `db:"id"`
-	Login     string        `db:"login"`
-	Password  string        `db:"password"`
 	Firstname string        `db:"firstname"`
 	Surname   string        `db:"surname"`
 	Birthday  *time.Time    `db:"birthday"`

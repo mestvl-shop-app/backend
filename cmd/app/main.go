@@ -27,7 +27,7 @@ func main() {
 
 	// Init logger
 	logger := log.SetupLogger(cfg.Env)
-	logger.Info("start github.com/mestvl-shop-app/backend",
+	logger.Info("start shop backend",
 		"env", cfg.Env,
 	)
 	logger.Debug("debug messages are enabled")
