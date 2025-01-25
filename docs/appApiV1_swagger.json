@@ -1,0 +1,112 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Backend API for NNBlog Service",
+        "title": "Backend API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/api/app/v1",
+    "paths": {
+        "/clients": {
+            "post": {
+                "description": "Регистрация",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Регистрация",
+                "parameters": [
+                    {
+                        "description": "Регистрация",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.clientRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorStruct"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ErrorStruct": {
+            "type": "object",
+            "properties": {
+                "error_code": {
+                    "type": "integer"
+                },
+                "error_message": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.ClientGender": {
+            "type": "integer",
+            "enum": [
+                0,
+                10,
+                20
+            ],
+            "x-enum-varnames": [
+                "ClientGenderNotSelected",
+                "ClientGenderMale",
+                "ClientGenderFemale"
+            ]
+        },
+        "v1.clientRegisterRequest": {
+            "type": "object",
+            "required": [
+                "firstname",
+                "gender",
+                "id",
+                "surname"
+            ],
+            "properties": {
+                "birthday": {
+                    "type": "string"
+                },
+                "firstname": {
+                    "type": "string"
+                },
+                "gender": {
+                    "$ref": "#/definitions/domain.ClientGender"
+                },
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "surname": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "UserAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

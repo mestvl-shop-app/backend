@@ -1,0 +1,28 @@
+env: "local" # local, dev, prod
+http_server:
+  port: "8080"
+  timeout: 4s
+  idle_timeout: 60s
+  swagger_enabled: true
+database:
+  net: "tcp"
+  host: "localhost"
+  port: "5432"
+  db_name: "shopbackend"
+  user: "root"
+  password: "root"
+  sslmode: disable
+  time_zone: "UTC"
+  timeout: 2s
+  max_idle_connections: 40
+  max_open_connections: 40
+limiter:
+  rps: 10
+  burst: 20
+  ttl: 10m
+auth:
+  jwt:
+    access_token_ttl: 10m
+    refresh_token_ttl: 720h
+    signing_key: "notasecret"
+  password_salt: "notasecret"

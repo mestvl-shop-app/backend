@@ -1,0 +1,76 @@
+basePath: /api/app/v1
+definitions:
+  ErrorStruct:
+    properties:
+      error_code:
+        type: integer
+      error_message:
+        type: string
+    type: object
+  domain.ClientGender:
+    enum:
+    - 0
+    - 10
+    - 20
+    type: integer
+    x-enum-varnames:
+    - ClientGenderNotSelected
+    - ClientGenderMale
+    - ClientGenderFemale
+  v1.clientRegisterRequest:
+    properties:
+      birthday:
+        type: string
+      firstname:
+        type: string
+      gender:
+        $ref: '#/definitions/domain.ClientGender'
+      id:
+        format: uuid
+        type: string
+      surname:
+        type: string
+    required:
+    - firstname
+    - gender
+    - id
+    - surname
+    type: object
+info:
+  contact: {}
+  description: Backend API for NNBlog Service
+  title: Backend API
+  version: "1.0"
+paths:
+  /clients:
+    post:
+      consumes:
+      - application/json
+      description: Регистрация
+      parameters:
+      - description: Регистрация
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/v1.clientRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorStruct'
+        "500":
+          description: Internal Server Error
+      summary: Регистрация
+      tags:
+      - Client
+securityDefinitions:
+  UserAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
