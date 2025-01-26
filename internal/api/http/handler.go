@@ -10,11 +10,11 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	_ "github.com/mestvl-shop-app/backend/docs"
-	"github.com/mestvl-shop-app/backend/pkg/auth"
 	"github.com/mestvl-shop-app/backend/pkg/limiter"
 	"github.com/mestvl-shop-app/backend/pkg/validator"
 
 	appV1 "github.com/mestvl-shop-app/backend/internal/api/http/app/v1"
+	"github.com/mestvl-shop-app/backend/internal/client/auth"
 	"github.com/mestvl-shop-app/backend/internal/config"
 	"github.com/mestvl-shop-app/backend/internal/service"
 
@@ -22,16 +22,20 @@ import (
 )
 
 type Handler struct {
-	services     *service.Services
-	logger       *slog.Logger
-	tokenManager auth.TokenManager
+	services          *service.Services
+	logger            *slog.Logger
+	authServiceClient *auth.Client
 }
 
-func NewHandlers(services *service.Services, logger *slog.Logger, tokenManager auth.TokenManager) *Handler {
+func NewHandlers(
+	services *service.Services,
+	logger *slog.Logger,
+	authServiceClient *auth.Client,
+) *Handler {
 	return &Handler{
-		services:     services,
-		logger:       logger,
-		tokenManager: tokenManager,
+		services:          services,
+		logger:            logger,
+		authServiceClient: authServiceClient,
 	}
 }
 
@@ -71,7 +75,7 @@ func (h *Handler) Init(cfg *config.Config) *gin.Engine {
 }
 
 func (h *Handler) initAPI(router *gin.Engine) {
-	appHandlersV1 := appV1.NewHandler(h.services, h.logger, h.tokenManager)
+	appHandlersV1 := appV1.NewHandler(h.services, h.logger, h.authServiceClient)
 	api := router.Group("/api")
 	{
 		appHandlersV1.Init(api)

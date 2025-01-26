@@ -10,15 +10,18 @@ import (
 	"time"
 
 	apiHttp "github.com/mestvl-shop-app/backend/internal/api/http"
+	"github.com/mestvl-shop-app/backend/internal/client/auth"
 	"github.com/mestvl-shop-app/backend/internal/config"
 	"github.com/mestvl-shop-app/backend/internal/db"
 	"github.com/mestvl-shop-app/backend/internal/repository"
 	"github.com/mestvl-shop-app/backend/internal/server"
 	"github.com/mestvl-shop-app/backend/internal/service"
-	"github.com/mestvl-shop-app/backend/pkg/auth"
 
-	hash "github.com/mestvl-shop-app/backend/pkg/hasher"
 	log "github.com/mestvl-shop-app/backend/pkg/logger"
+)
+
+const (
+	AppID = 1
 )
 
 func main() {
@@ -46,26 +49,34 @@ func main() {
 	}()
 	logger.Info("postgres connection done")
 
-	// Token manager
-	tokenManager, err := auth.NewManager(cfg.Auth.JWT)
+	// Init auth service grpc client
+	authServiceClient, err := auth.New(
+		context.Background(),
+		logger,
+		cfg.Clients.AuthService.Address,
+		cfg.Clients.AuthService.Timeout,
+		cfg.Clients.AuthService.RetriesCount,
+	)
 	if err != nil {
-		logger.Error("auth manager creation err", "error", err)
+		logger.Error("failed to init auth service client",
+			"error", err,
+		)
 		return
 	}
-
-	// Hasher
-	hasher := hash.NewSHA1Hasher(cfg.Auth.PasswordSalt)
 
 	// Init services, repositories, handlers
 	repos := repository.NewRepositories(dbPostgres)
 	services := service.NewServices(service.Deps{
-		Logger:       logger,
-		Config:       cfg,
-		Hasher:       hasher,
-		TokenManager: tokenManager,
-		Repos:        repos,
+		Logger:     logger,
+		Config:     cfg,
+		Repos:      repos,
+		AuthClient: authServiceClient,
 	})
-	handlers := apiHttp.NewHandlers(services, logger, tokenManager)
+	handlers := apiHttp.NewHandlers(
+		services,
+		logger,
+		authServiceClient,
+	)
 
 	// Init HTTP server
 	srv := server.NewServer(cfg, handlers.Init(cfg))

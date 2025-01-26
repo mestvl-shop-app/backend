@@ -4,10 +4,9 @@ import (
 	"context"
 	"log/slog"
 
+	"github.com/mestvl-shop-app/backend/internal/client/auth"
 	"github.com/mestvl-shop-app/backend/internal/config"
 	"github.com/mestvl-shop-app/backend/internal/repository"
-	"github.com/mestvl-shop-app/backend/pkg/auth"
-	hash "github.com/mestvl-shop-app/backend/pkg/hasher"
 )
 
 type Services struct {
@@ -15,19 +14,23 @@ type Services struct {
 }
 
 type Deps struct {
-	Logger       *slog.Logger
-	Config       *config.Config
-	Hasher       hash.PasswordHasher
-	TokenManager auth.TokenManager
-	Repos        *repository.Repositories
+	Logger     *slog.Logger
+	Config     *config.Config
+	Repos      *repository.Repositories
+	AuthClient *auth.Client
 }
 
 func NewServices(deps Deps) *Services {
 	return &Services{
-		Client: newClientService(deps.Repos.Client),
+		Client: newClientService(
+			deps.Repos.Client,
+			deps.AuthClient,
+			deps.Config,
+		),
 	}
 }
 
 type ClientServiceInterface interface {
-	Register(ctx context.Context, dto *RegisterClientDTO) error
+	Register(ctx context.Context, input *RegisterClientInput) error
+	Login(ctx context.Context, email string, password string) (string, error)
 }

@@ -20,9 +20,10 @@ limiter:
   rps: 10
   burst: 20
   ttl: 10m
-auth:
-  jwt:
-    access_token_ttl: 10m
-    refresh_token_ttl: 720h
-    signing_key: "notasecret"
-  password_salt: "notasecret"
+clients:
+  auth_service:
+    address: "localhost:44044"
+    timeout: 5s
+    retries_count: 4
+    insecure: true
+app_id: 1

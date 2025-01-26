@@ -10,11 +10,12 @@ import (
 )
 
 type Config struct {
-	Env        string     `yaml:"env" env-required:"true"`
-	HttpServer HttpServer `yaml:"http_server" env-required:"true"`
-	Database   Database   `yaml:"database" env-required:"true"`
-	Limiter    Limiter    `yaml:"limiter" env-required:"true"`
-	Auth       AuthConfig `yaml:"auth" env-required:"true"`
+	Env        string        `yaml:"env" env-required:"true"`
+	HttpServer HttpServer    `yaml:"http_server" env-required:"true"`
+	Database   Database      `yaml:"database" env-required:"true"`
+	Limiter    Limiter       `yaml:"limiter" env-required:"true"`
+	Clients    ClientsConfig `yaml:"clients"`
+	AppID      int           `yaml:"app_id" env-required:"true"`
 }
 
 type HttpServer struct {
@@ -44,16 +45,15 @@ type Limiter struct {
 	TTL   time.Duration `yaml:"ttl" env-default:"10m"`
 }
 
-type AuthConfig struct {
-	JWT                    JWTConfig `yaml:"jwt" env-required:"true"`
-	PasswordSalt           string    `yaml:"password_salt" env-required:"true"`
-	VerificationCodeLength int       `yaml:"verification_code_length" env-default:"6"`
+type Client struct {
+	Address      string        `yaml:"address"`
+	Timeout      time.Duration `yaml:"timeout"`
+	RetriesCount int           `yaml:"retries_count"`
+	Insecure     bool          `yaml:"insecure"`
 }
 
-type JWTConfig struct {
-	AccessTokenTTL  time.Duration `yaml:"access_token_ttl" env-default:"1m"`
-	RefreshTokenTTL time.Duration `yaml:"refresh_token_ttl" env-default:"240h"`
-	SigningKey      string        `yaml:"signing_key" env-required:"true"`
+type ClientsConfig struct {
+	AuthService Client `yaml:"auth_service"`
 }
 
 func MustLoad() *Config {

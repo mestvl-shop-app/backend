@@ -8,7 +8,78 @@
     },
     "basePath": "/api/app/v1",
     "paths": {
-        "/clients": {
+        "/clients/login": {
+            "post": {
+                "description": "Авторизация",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Авторизация",
+                "parameters": [
+                    {
+                        "description": "Авторизация",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.clientLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.clientLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorStruct"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/clients/ping": {
+            "post": {
+                "security": [
+                    {
+                        "UserAuth": []
+                    }
+                ],
+                "description": "Ping",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Ping",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/clients/register": {
             "post": {
                 "description": "Регистрация",
                 "consumes": [
@@ -61,40 +132,65 @@
                 }
             }
         },
-        "domain.ClientGender": {
-            "type": "integer",
+        "domain.ClientGenderString": {
+            "type": "string",
             "enum": [
-                0,
-                10,
-                20
+                "male",
+                "female"
             ],
             "x-enum-varnames": [
-                "ClientGenderNotSelected",
-                "ClientGenderMale",
-                "ClientGenderFemale"
+                "ClientGenderStringMale",
+                "ClientGenderStringFemale"
             ]
+        },
+        "v1.clientLoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                }
+            }
+        },
+        "v1.clientLoginResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
         },
         "v1.clientRegisterRequest": {
             "type": "object",
             "required": [
+                "email",
                 "firstname",
-                "gender",
-                "id",
+                "password",
                 "surname"
             ],
             "properties": {
                 "birthday": {
                     "type": "string"
                 },
+                "email": {
+                    "type": "string"
+                },
                 "firstname": {
                     "type": "string"
                 },
                 "gender": {
-                    "$ref": "#/definitions/domain.ClientGender"
+                    "$ref": "#/definitions/domain.ClientGenderString"
                 },
-                "id": {
+                "password": {
                     "type": "string",
-                    "format": "uuid"
+                    "minLength": 6
                 },
                 "surname": {
                     "type": "string"

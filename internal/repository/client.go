@@ -21,10 +21,10 @@ func newClientRepository(db *sqlx.DB) *clientRepository {
 func (r *clientRepository) Create(ctx context.Context, client *domain.Client) error {
 	const query = "" +
 		"INSERT INTO client " +
-		"(id, firstname, surname, birthday, gender) " +
-		"VALUES($1, $2, $3, $4, $5);"
+		"(id, firstname, surname, birthday, gender, email) " +
+		"VALUES($1, $2, $3, $4, $5, $6);"
 
-	_, err := r.db.ExecContext(ctx, query, client.ID, client.Firstname, client.Surname, client.Birthday, client.Gender)
+	_, err := r.db.ExecContext(ctx, query, client.ID, client.Firstname, client.Surname, client.Birthday, client.Gender, client.Email)
 
 	if err != nil {
 		if db.IsDuplicate(err) {

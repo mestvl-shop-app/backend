@@ -3,8 +3,8 @@ package v1
 import (
 	"log/slog"
 
+	"github.com/mestvl-shop-app/backend/internal/client/auth"
 	"github.com/mestvl-shop-app/backend/internal/service"
-	"github.com/mestvl-shop-app/backend/pkg/auth"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,16 +18,20 @@ import (
 // @name Authorization
 
 type Handler struct {
-	services     *service.Services
-	logger       *slog.Logger
-	tokenManager auth.TokenManager
+	services          *service.Services
+	logger            *slog.Logger
+	authServiceClient *auth.Client
 }
 
-func NewHandler(services *service.Services, logger *slog.Logger, tokenManager auth.TokenManager) *Handler {
+func NewHandler(
+	services *service.Services,
+	logger *slog.Logger,
+	authServiceClient *auth.Client,
+) *Handler {
 	return &Handler{
-		services:     services,
-		logger:       logger,
-		tokenManager: tokenManager,
+		services:          services,
+		logger:            logger,
+		authServiceClient: authServiceClient,
 	}
 }
 

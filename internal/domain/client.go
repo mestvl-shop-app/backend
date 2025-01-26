@@ -12,6 +12,7 @@ type Client struct {
 	Surname   string        `db:"surname"`
 	Birthday  *time.Time    `db:"birthday"`
 	Gender    *ClientGender `db:"gender"`
+	Email     string        `db:"email"`
 	CreatedAt time.Time     `db:"created_at"`
 	UpdatedAt time.Time     `db:"updated_at"`
 	DeletedAt *time.Time    `db:"deleted_at"`

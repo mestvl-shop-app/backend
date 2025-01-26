@@ -7,33 +7,49 @@ definitions:
       error_message:
         type: string
     type: object
-  domain.ClientGender:
+  domain.ClientGenderString:
     enum:
-    - 0
-    - 10
-    - 20
-    type: integer
+    - male
+    - female
+    type: string
     x-enum-varnames:
-    - ClientGenderNotSelected
-    - ClientGenderMale
-    - ClientGenderFemale
+    - ClientGenderStringMale
+    - ClientGenderStringFemale
+  v1.clientLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  v1.clientLoginResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
   v1.clientRegisterRequest:
     properties:
       birthday:
         type: string
+      email:
+        type: string
       firstname:
         type: string
       gender:
-        $ref: '#/definitions/domain.ClientGender'
-      id:
-        format: uuid
+        $ref: '#/definitions/domain.ClientGenderString'
+      password:
+        minLength: 6
         type: string
       surname:
         type: string
     required:
+    - email
     - firstname
-    - gender
-    - id
+    - password
     - surname
     type: object
 info:
@@ -42,7 +58,52 @@ info:
   title: Backend API
   version: "1.0"
 paths:
-  /clients:
+  /clients/login:
+    post:
+      consumes:
+      - application/json
+      description: Авторизация
+      parameters:
+      - description: Авторизация
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/v1.clientLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.clientLoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorStruct'
+        "500":
+          description: Internal Server Error
+      summary: Авторизация
+      tags:
+      - Client
+  /clients/ping:
+    post:
+      consumes:
+      - application/json
+      description: Ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Forbidden
+      security:
+      - UserAuth: []
+      summary: Ping
+      tags:
+      - Client
+  /clients/register:
     post:
       consumes:
       - application/json
